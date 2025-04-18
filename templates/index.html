@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #6B7280 0%, #1E3A8A 100%);
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .input-icon {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>');
+            background-position: 10px center;
+            background-repeat: no-repeat;
+            background-size: 20px;
+        }
+    </style>
+</head>
+<body class="gradient-bg flex items-center justify-center min-h-screen p-4">
+    <div class="card p-8 rounded-2xl shadow-2xl max-w-lg w-full">
+        <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-6">QR Code Generator</h1>
+        <form method="POST" class="space-y-6">
+            <div class="relative">
+                <label for="text" class="block text-sm font-medium text-gray-700">Text or URL</label>
+                <input type="text" name="text" id="text" required
+                       class="mt-1 block w-full pl-12 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm input-icon transition duration-300"
+                       placeholder="e.g., https://example.com"
+                       oninput="this.classList.toggle('border-red-500', !this.value)">
+            </div>
+            <div>
+                <label for="size" class="block text-sm font-medium text-gray-700">QR Code Size</label>
+                <input type="range" name="size" id="size" min="100" max="500" value="300" step="10"
+                       class="mt-1 block w-full">
+                <span id="size-value" class="text-sm text-gray-500">300px</span>
+            </div>
+            <button type="submit"
+                    class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 flex items-center justify-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span>Generate QR Code</span>
+            </button>
+        </form>
+        {% if qr_image %}
+        <div class="mt-8 text-center animate__animated animate__fadeIn">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Your QR Code</h2>
+            <img src="data:image/png;base64,{{ qr_image }}" alt="QR Code" class="mx-auto rounded-lg shadow-md">
+            <a href="/download"
+               class="mt-6 inline-flex items-center bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition duration-300">
+               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+               </svg>
+               Download QR Code
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        const sizeSlider = document.getElementById('size');
+        const sizeValue = document.getElementById('size-value');
+        sizeSlider.addEventListener('input', () => {
+            sizeValue.textContent = `${sizeSlider.value}px`;
+        });
+    </script>
+</body>
+</html>
